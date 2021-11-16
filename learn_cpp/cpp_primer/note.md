@@ -12,7 +12,7 @@
 > + 变量定义：包含声明，还负责初始化和申请存储空间
 > + <span style="color:blue">extern</span>：声明一个变量而非定义【不要显式地初始化变量，会变成定义】。
 
-![page41](./书籍截图/变量声明与定义.png)
+![page41 note](./书籍截图/变量声明与定义.png)
 
 2.3.2 指针
 > 1. void指针
@@ -22,7 +22,7 @@
 
 2.3.3 复合类型
 
-![page53](./书籍截图/复合类型tip.png)
+![page53 tip](./书籍截图/复合类型tip.png)
 
 > 1. 对指针的引用
 ```cpp
@@ -38,7 +38,7 @@ int *&r = pi;     //r是一个对指针p的引用
 
 2.5.1 类型别名
 
-![page61](./书籍截图/指针、常量和类型别名.png)
+![page61 指针、常量和类型别名](./书籍截图/指针、常量和类型别名.png)
 
 2.5.2 auto说明符
 > 1. auto会忽略顶层const（声明称const auto类型重新赋予顶层const属性），会保留底层const
@@ -46,7 +46,7 @@ int *&r = pi;     //r是一个对指针p的引用
 > 3. auto与decltype(expr/var):
 > > + auto变量需要推断类型，所以必须要初始化
 > > + decltype使用参数的类型，可以不初始化；能保留顶层const
-![page63](./书籍截图/decltype警告.png)
+![page63 warning](./书籍截图/decltype警告.png)
 
 2.6.3 编写头文件
 > 1. 文件保护符
@@ -67,3 +67,11 @@ int *&r = pi;     //r是一个对指针p的引用
 > string s1 = s +",";    //正确，一个string与字面值常量相加
 > string s2 = "hi" + "," //错误，两个运算对象都不是string
 > ```
+
+3.4.1 容器迭代器
+
+![page99 warning](./书籍截图/迭代器警告.png)
+
+3.5.1 数组声明
+
+![page103 tip](书籍截图/数组声明tip.png)
