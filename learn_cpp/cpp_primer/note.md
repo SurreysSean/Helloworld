@@ -31,7 +31,7 @@ int * pi;       //P是一个int型指针
 int *&r = pi;     //r是一个对指针p的引用
 ```
 
-2.4.4 常量表达式和constexpr
+2.4.4 <div id="constexpr">常量表达式和constexpr </div>
 > 1. 是指值不会改变且在**编译过程**就能得到结果的表达式。
 > 2. 将变量声明为 constexpr类型以使由编译器来验证变量的值是否是一个常量表达式。
 > 3. constexpr修饰指针仅对指针本身有效，与指针指向的对象无关。
@@ -43,7 +43,7 @@ int *&r = pi;     //r是一个对指针p的引用
 2.5.2 auto说明符
 > 1. auto会忽略顶层const（声明称const auto类型重新赋予顶层const属性），会保留底层const
 > 2. 用auto定义多个变量时，必须保证变量的基本类型相同。
-> 3. auto与decltype(expr/var):
+> 3. <div id="decltype">auto与decltype(expr/var):</div>
 > > + auto变量需要推断类型，所以必须要初始化
 > > + decltype使用参数的类型，可以不初始化；能保留顶层const
 ![page63 warning](./书籍截图/decltype警告.png)
@@ -54,14 +54,16 @@ int *&r = pi;     //r是一个对指针p的引用
 >> + #ifdef当且仅当变量已定义时为真，#ifndef当且仅当变量未定义时为真；
 >> + 一旦检查结果为真，则执行后续操作直至遇到#endif指令为止。
 > ```cpp
-//example 如果文件未被包含，执行文件内容，否则忽略
-#ifndef var
-#define var
-...         //该文件内容
-#endif
+> //example 如果文件未被包含，执行文件内容，否则忽略
+> #ifndef var
+> #define var
+> ...         //该文件内容
+> #endif
 > ```
-3.2.2 String对象
 
+- - -
+
+3.2.2 String对象
 > 1. string对象和字符字面值及字符串字面值混在一条语句中使用时，必须确保每个加法运算符(+)的两侧的运算对象至少有一个是string
 > ```cpp
 > string s1 = s +",";    //正确，一个string与字面值常量相加
@@ -79,6 +81,8 @@ int *&r = pi;     //r是一个对指针p的引用
 3.5.5 与旧代码的接口
 
 > 1. string对象装换为C风格字符串使用【string对象】.c_str
+
+- - -
 
 4.1.1 表达式的基本概念
 
@@ -115,5 +119,106 @@ int *&r = pi;     //r是一个对指针p的引用
 >> + static_cast,dynamic_cast,const_cast,reinterpret_cast都应当少用。每次书写强制类型转换语句都应当考虑是否能以其他方式实现。
 
 4.12 运算符优先级表
+
 ![page147 运算符优先级表](./书籍截图/运算符优先级表1.png)
+
 ![page148 运算符优先级表](./书籍截图/运算符优先级表2.png)
+
+- - -
+
+6.2.3 const形参和实参
+> 1. 尽量使用常量引用
+>> + 把函数不会改变的参数定义成普通引用，会导致无法接受常量作为参数（比如字面值常量）
+
+6.2.4 数组形参
+> 1. 传递多维数组
+>> + 因为处理的是数组的数组，所以首元素本身就是一个数组，指针就是一个指向数组的指针。数组第二维（以及后面所有维度）的大小都是数组类型的部分，不能省略。
+>> ```cpp
+>> //matrix指向数组的首元素，该数组的元素是由10个整数构成的数组
+>> void print(int (*matrix)[10],int rowSize){...}
+>>``` 
+
+6.2.6 含有可变形参的函数
+> 1. initializer_list形参
+>> + 用initializer_list<type>()作为形参后，可用"{}"传入数量可变的参数;
+>> + ![page198 表6.1](./书籍截图/initializer_list操作.png)
+> 2. 省略号形参
+>> + 应该仅仅用于C和C++的通用类型
+>> + 应注意，大多数类类型对象在传递给省略号形参时都无法正确拷贝
+
+6.3.3 返回数组指针
+> 1. 使用尾置返回类型，适用于返回类型比较复杂
+>> ```cpp
+>> //func接受一个int类型的实参，返回一个指针，该指针指向含有10个整数的数组
+>> auto func(int i) -> int(*)[10];
+>>```
+> 2. 使用[decltype(与返回类型类型相同的参数)](#decltype)作为返回类型
+
+6.4 函数重载
+> 1. 重载与const形参
+>> + 顶层const不影响传入函数的对象。一个拥有顶层const的形参无法和另一个没有顶层const的形参区分开来;
+>> + 如果形参是某种类型的指针或引用，则通过区分其指向的是常量对象还是非常量对象可以实现函数重载，此时的const是底层的;
+
+6.5.2 [constexpr](#constexpr)函数
+> 1. 基本性质
+>> + constexpr函数被隐式指定为内联函数；
+>> + 返回类型和所有形参都是字面值类型；
+>> + 函数体中有且仅有一条return语句，其他语句只能包含不在**运行时**执行动作的语句；
+>> ```cpp
+>> //示例constexpr函数
+>> constexpr int substract(const int a,const int b)
+>> {
+>>     return a-b;
+>> }
+>> ```
+> 2. 如果constexpr函数用于常量表达式
+>> ```cpp
+>> //使用常量表达式调用此函数就会返回常量表达式
+>> constexpr int res = substract(9,5);//res = 4
+>> ```
+> 3. constexpr函数用于非常量表达式
+>> ```cpp
+>> //使用非常量表达式调用此类函数，返回非常量表达式
+>> int a=9,b=5;
+>> int res = substract(a,b);//res = 4
+>> constexpr int res = substract(a,b);//编译报错，返回值是非常量表达式
+>> ```
+
+6.5.3 调试帮助
+> 1. assert(expr)
+>> 对expr求值，如果表达式为假(即0，仅为假时有动作), assert输出信息并终止程序的执行。
+> 2. NEDBUG
+>> + 如果定义了NEDBUG，则assert什么也不做
+>> + 预处理器定义的有利于调试的名字
+>>> \__func__ 存放函数的名字
+
+>>>![page217有用的名字](./书籍截图/程序调试特殊名字.png)
+
+6.7 函数指针
+> 1. 调用函数指针
+>> ```cpp
+>>void func(int param);
+>> void (*pf)(int param);
+>> // 下列两种赋值方式等价
+>> pf = param;
+>> pf = &param;
+>> // 下列三种调用方式等价
+>> pf(param);
+>> (*pf)(param);
+>> func(param);
+>> ```
+> 2. 函数指针形参
+>> ```cpp
+>> //下列两种声明函数指针形参方式等价
+>> void pfpFunction(void pf(int param));
+>> void pfpFunction(void (*pf)(int param));
+>> //直接使用函数作为形参自动转换为指针
+>> pfpFunction(func);
+>>```
+> 3. 返回函数指针
+>> ```cpp
+>> //使用类型别名
+>>using F = int(int*,int*);//F是函数类型
+>>using FP = int(*)(int*,int*);//FP是函数指针
+>>//同样可用使用auto尾置和decltype的方法
+>>``` 
