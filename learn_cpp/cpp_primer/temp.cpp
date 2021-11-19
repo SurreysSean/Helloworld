@@ -3,25 +3,35 @@
 #include <typeinfo>
 
 using namespace std;
-inline string input()
+class testClass
 {
-    string r;
-    cin>>r;
-    return r;
+private:
+int a;
+    /* data */
+public:
+    testClass(int w=5);
+    void showthis();
+    ~testClass();
+};
+
+testClass::testClass(int w)
+{
+    a = w;
 }
 
-constexpr int  substract(int a,const int b )
+testClass::~testClass()
 {
-    return a-b;
+}
+
+void testClass::showthis()
+{
+    cout<<this<<endl;
 }
 
 int main()
 {
-    // constexpr int res = isShorter(3,2);
-    // cout<<res<<endl;
-    // cout<<input()<<endl;
-    int a=30,b=2;
-    int res0 = substract(a,b);
-    cout<<res0<<endl;
+    testClass tc(10);
+    tc.showthis();
+    cout<<&tc<<endl;
     return 0;
 }
