@@ -3,35 +3,16 @@
 #include <typeinfo>
 
 using namespace std;
-class testClass
+
+class testStaticMem
 {
-private:
-int a;
-    /* data */
-public:
-    testClass(int w=5);
-    void showthis();
-    ~testClass();
+    public:
+    static constexpr char a = 'a';
 };
-
-testClass::testClass(int w)
-{
-    a = w;
-}
-
-testClass::~testClass()
-{
-}
-
-void testClass::showthis()
-{
-    cout<<this<<endl;
-}
+static string a;
 
 int main()
 {
-    testClass tc(10);
-    tc.showthis();
-    cout<<&tc<<endl;
+    cout<< testStaticMem::a<<endl;
     return 0;
 }
