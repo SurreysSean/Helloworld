@@ -1,4 +1,5 @@
 #include <iostream>
+#include <istream>
 #include <string>
 #include <typeinfo>
 
@@ -15,4 +16,5 @@ int main()
 {
     cout<< testStaticMem::a<<endl;
     return 0;
+    cin.tie(&cerr);
 }
