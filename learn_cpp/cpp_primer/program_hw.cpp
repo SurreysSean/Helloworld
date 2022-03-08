@@ -13,9 +13,9 @@ void ex2_8();
 void ex3_2();
 void ex3_4();
 void ex3_5();
-void ex3_6and3_7();
+void ex3_6To3_7();
 void ex3_10();
-void ex3_14and3_15();
+void ex3_14To3_15();
 void ex3_16();
 void ex3_17();
 void ex3_20();
@@ -27,6 +27,12 @@ void ex3_41();
 void ex3_42();
 void ex4_10();
 void ex4_21();
+void ex5_9To5_12();
+void ex5_14();
+void ex5_17();
+void ex5_19();
+void ex5_20();
+void ex5_23To5_25();
 
 int main()
 {
@@ -34,9 +40,9 @@ int main()
 	// ex2_8();
 	// ex3_2();
 	// ex3_4();
-	// ex3_6and3_7();
+	// ex3_6To3_7();
 	// ex3_10();
-	// ex3_14and3_15();
+	// ex3_14To3_15();
 	// ex3_16();
 	// ex3_17();
 	// ex3_20();
@@ -48,6 +54,11 @@ int main()
 	// ex3_42();
 	// ex4_10();
 	// ex4_21();
+	// ex5_14();
+	// ex5_17();
+	// ex5_19();
+	// ex5_20();
+	ex5_23To5_25();
 	return 0;
 }
 
@@ -115,7 +126,7 @@ void ex3_5()
 	cout << "res 1: " << res << ", res 2: " << res1 << endl;
 }
 
-void ex3_6and3_7() // ex3_7，若改为auto为char
+void ex3_6To3_7() // ex3_7，若改为auto为char
 {
 	cout << "ex3.6: \n";
 	string s = "Today,I want to find a internship!!!";
@@ -155,7 +166,7 @@ void ex3_10()
 	cout << res << endl;
 }
 
-void ex3_14and3_15()
+void ex3_14To3_15()
 {
 	cout << "ex3.14: " << endl;
 	cout << "read a set of integers" << endl;
@@ -362,7 +373,7 @@ void ex4_10()
 {
 	cout << "ex4.10: " << endl;
 	int temp;
-	while (cin>>temp&&temp!=42)
+	while (cin >> temp && temp != 42)
 	{
 		cout << temp << endl;
 	}
@@ -371,9 +382,167 @@ void ex4_21()
 {
 	cout << "ex4.21: " << endl;
 	vector<int> vec{1, 2, 3, 4, 5, 6, 7, 8, 9};
-	for (int &i:vec)
+	for (int &i : vec)
 	{
 		i % 2 ? i *= 2 : 0;
 		cout << i << endl;
+	}
+}
+void ex5_9To5_12()
+{
+	cout << "ex5.09~5.12: " << endl;
+	int acnt = 0, spaceCnt = 0, specialtwoCharCnt = 0;
+	string text("");
+	cout << "Read a text: " << endl;
+	char c;
+	while ((c = getchar()) != EOF)
+	{
+		text += c;
+	}
+
+	for (unsigned i = 0; i < text.size(); i++)
+	{
+		char c = text[i];
+		if (isalpha(c))
+		{
+			if (c == 'f' && i + 1 < text.size() && (text[i + 1] == 'f' | text[i + 1] == 'l' | text[i + 1] == 'i'))
+			{
+				++specialtwoCharCnt;
+			}
+			c = tolower(c);
+			if (c == 'a' || c == 'o' || c == 'e' || c == 'i' || c == 'u')
+			{
+				++acnt;
+			}
+		}
+		else if (isspace(c))
+		{
+			++spaceCnt;
+		}
+	}
+	cout << "vowel nums: " << acnt << ", space nums: " << spaceCnt << ", special two characters sequence: " << specialtwoCharCnt << endl;
+}
+void ex5_14()
+{
+	cout << "ex5.14: " << endl;
+	vector<string> vs;
+	string s;
+	int max_repeat_time = 0;
+	int temp = 0;
+	while (cin >> s && !cin.eof())
+	{
+		vs.emplace_back(s);
+		s.clear();
+	}
+
+	for (auto iter = vs.begin() + 1; iter != vs.end(); iter++)
+	{
+		if (*iter == *(iter - 1))
+		{
+			++temp;
+			s = *iter;
+		}
+		else
+		{
+			if (max_repeat_time < temp)
+			{
+				max_repeat_time = temp;
+			}
+			temp = 0;
+		}
+	}
+	if (max_repeat_time != 0)
+		cout << "word: " << s << ", max repeat times = " << max_repeat_time + 1 << endl;
+	else
+		cout << "no repeat word" << endl;
+}
+void ex5_17()
+{
+	cout << "ex5.17: " << endl;
+	vector<int> vi1{1, 2, 3, 5};
+	vector<int> vi2{1, 2, 3, 4, 5, 6, 7, 8, 9};
+	unsigned i = 0;
+	if (vi1.size() <= vi2.size())
+	{
+		for (i = 0; i < vi1.size(); i++)
+		{
+			if (vi1[i] != vi2[i])
+				break;
+		}
+		if (i == vi1.size())
+			cout << "True\n";
+		else
+			cout << "False\n";
+	}
+	else
+	{
+		for (i = 0; i < vi2.size(); i++)
+		{
+			if (vi1[i] != vi2[i])
+				break;
+		}
+		if (i == vi2.size())
+			cout << "True\n";
+		else
+			cout << "False\n";
+	}
+}
+void ex5_19()
+{
+	cout << "ex5.19: " << endl;
+	string s1, s2;
+	do
+	{
+		cout << "Enter two strings: ";
+		cin >> s1 >> s2;
+		if (!cin.eof())
+			cout << "The shorter one: " << (s1.size() <= s2.size() ? s1 : s2) << endl;
+		cin.ignore();
+	} while (!cin.eof());
+}
+void ex5_20()
+{
+	cout << "ex5.19: " << endl;
+	string cur_str, last_str;
+	while (cin >> cur_str && !cin.eof())
+	{
+		if (cur_str == last_str)
+		{
+			cout << "the repeated word: " << cur_str << endl;
+			break;
+		}
+		last_str = cur_str;
+	}
+	if (cin.eof())
+	{
+		cout << "no repeated word" << endl;
+	}
+}
+void ex5_23To5_25()
+{
+	cout << "ex5.23~5.25: " << endl;
+	int a, b;
+	while (cin.good())
+	{
+		try
+		{
+			cout << "Enter two num(Enter other character to exit)\n";
+			if (cin >> a >> b)
+			{
+				!b ? throw runtime_error("divisor can't be 0") : 0;
+				cout << a / b << endl;
+			}
+		}
+		catch (const runtime_error &e)
+		{
+			std::cerr << e.what() << '\n';
+			cout << "Try again?(enter 'n' to exit)" << endl;
+			char tempR;
+			cin >> tempR;
+			if (tempR == 'n')
+			{
+				break;
+			}
+		}
 	}
 }

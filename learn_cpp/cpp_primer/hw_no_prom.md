@@ -241,3 +241,67 @@ sizeof(f());
 4.37 依次：pv = static_cast\<void*>\(const_cast\<string*>ps); i = static_cast\<int>\(*pc);pv = static_cast\<void*>\(&d);pc = static_cast\<char*>\(pv);
 
 4.38 j/i的结果强制转换为double类型
+
+- - -
+5.1 不执行任何动作的语句，由单独一个分号构成。适用于语法上需要语句但是逻辑上不需要语句的场合。
+
+5.2 用花括号括起来的语句和声明的序列，也称为复合语句。适用于语法上需要一条语句但是逻辑上需要多条语句的场合。
+
+5.3 多条语句聚合成一条逗号运算符连接的语句，可读性降低了。
+
+5.4 
+```cpp
+//a Revised --编译器报错：条件声明应当包含初始化
+string::iterator iter = s.begin()
+while(iter!=s.end()){}
+//或者是
+while (string::iterator iter = s.end()){}
+//b Revised --变量status仅在while的作用域内生效
+bool status =false;
+while(bool status = find(word)){}
+if (!status){}
+```
+
+5.5 略
+
+5.6 略
+
+5.7 
+```cpp
+//a revised
+if (ival1!=ival2)
+ival1=ival2;
+else ival1= ival2 =0;
+//b revised
+if (ival < minval)
+    minval = ival,occurs =1;
+//c revised
+int ival;
+if (ival = get_value()) cout<<"ival = "<<ival<<endl;
+if (!ival) cout<<"ival = 0\n";
+//d revised
+if (ival == 0)
+ival = get_value();
+```
+
+5.8 在多个if-else和if语句嵌套时，怎么确定哪个if和哪个else匹配的问题叫做“悬垂else”。c++中else总是匹配离它最近的if
+
+5.13 依次：case语句缺少break；default中的ix并未被定义；一个case智能对应一个值；没有考虑default情况
+
+5.15 依次：计数循环ix从0到sz，if condition内ix未定义；含义同前，语法错误，缺少init-statement；含义同前，sz自增可能造成死循环
+
+5.16 略。随便吧，在汇编代码里都是一个东西
+
+5.18  依次：不断接受两个int并返回两数之和，需要使用花括号；ival应当定义在循环体外部；同前
+
+5.21 略
+
+5.22 
+```cpp
+int sz;
+do {
+    sz = get_size();
+}while(sz<=0>);
+```
+
+
