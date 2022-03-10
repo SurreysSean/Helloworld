@@ -7,60 +7,6 @@
 
 using namespace std;
 
-// function declaration
-void ex2_4();
-void ex2_8();
-void ex3_2();
-void ex3_4();
-void ex3_5();
-void ex3_6To3_7();
-void ex3_10();
-void ex3_14To3_15();
-void ex3_16();
-void ex3_17();
-void ex3_20();
-void ex3_23();
-void ex3_31();
-void ex3_35();
-void ex3_40();
-void ex3_41();
-void ex3_42();
-void ex4_10();
-void ex4_21();
-void ex5_9To5_12();
-void ex5_14();
-void ex5_17();
-void ex5_19();
-void ex5_20();
-void ex5_23To5_25();
-
-int main()
-{
-	// ex2_4();
-	// ex2_8();
-	// ex3_2();
-	// ex3_4();
-	// ex3_6To3_7();
-	// ex3_10();
-	// ex3_14To3_15();
-	// ex3_16();
-	// ex3_17();
-	// ex3_20();
-	// ex3_23();
-	// ex3_31();
-	// ex3_35();
-	// ex3_40();
-	// ex3_41();
-	// ex3_42();
-	// ex4_10();
-	// ex4_21();
-	// ex5_14();
-	// ex5_17();
-	// ex5_19();
-	// ex5_20();
-	ex5_23To5_25();
-	return 0;
-}
 
 void ex2_4()
 {
@@ -545,4 +491,143 @@ void ex5_23To5_25()
 			}
 		}
 	}
+}
+unsigned ex6_3_fact(unsigned x)
+{
+	if (!x)
+	{
+		cout << "ex6.3: " << endl;
+		return 1;
+	}
+	return x * ex6_3_fact(x - 1);
+}
+void ex6_4()
+{
+	cout << "ex6.4: " << endl;
+
+	int origin_input = 0;
+	cout << "Enter a integer: " ;
+	cin >> origin_input;
+	if (origin_input <0)
+	{
+		cout << "Input must be positive" << endl;
+		return;
+	}
+	cout << ex6_3_fact(origin_input) << endl;
+}
+void ex6_5(int i)
+{
+	cout << "ex6.5: " << endl;
+	if (i<0)
+	{
+		i = -i;
+	}
+	cout << i << endl;
+}
+int ex6_7()
+{
+	cout << "ex6.7: " << endl;
+	static int i = 0;
+	return ++i;
+}
+void ex6_10(int*a,int*b)
+{
+	cout << "ex6.10: " << endl;
+	int temp;
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+void ex6_12(int &a,int &b)
+{
+	cout << "ex6.10: " << endl;
+	int temp = a ^ b;
+	a = temp ^ a;
+	b = temp ^ b;
+}
+int ex6_21(const int a,const int  *const b)
+{
+	cout << "ex6.21: " << endl;
+	if (a>=*b)
+		return a;
+	return *b;
+}
+
+void ex6_22(const int *a,const int *b)
+{
+	cout << "ex6.22: " << endl;
+	const int *temp = b;
+	b = a;
+	a = temp;
+}
+void ex6_25(int argc,char**argv)
+{
+	cout << "ex6.22: " << endl;
+	if (argc !=3)
+	{
+		cout << "invalid parameters" << endl;
+		return;
+	}
+	string str = string(argv[1]) + string(argv[2]);
+	cout << str << endl;
+}
+
+void ex6_26(int argc,char**argv)
+{
+	cout << "ex6.26: " << endl;
+	for (int i = 1; i < argc;i++)
+	{
+		cout << "argv[" << i << "] = " << argv[i] << endl;
+	}
+}
+
+void ex6_27(initializer_list<int> &list)
+{
+	cout << "ex6.27: " << endl;
+	int sum = 0;
+	for (auto iter = list.begin(); iter != list.end();iter++)
+	{
+		sum += *iter;
+	}
+	cout << "sum = " << sum << endl;
+}
+void ex6_33(const vector<int> &vec,int p)
+{
+	cout << "ex6.33: " << endl;
+	if(p<vec.size())
+	{
+		cout << vec[p] << endl;
+		ex6_33(vec, p + 1);
+	}
+}
+int ex6_55_add(int a,int b)
+{
+	return a + b;
+}
+int ex6_55_sub(int a,int b)
+{
+	return a - b;
+}
+int ex6_55_prod(int a,int b)
+{
+	return a * b;
+}
+int ex6_55_div(int a,int b)
+{
+	return a / b;
+}
+void ex6_55()
+{
+	cout << "ex6.55: " << endl;
+	vector<int (*)(int, int)> funcPtrVec{ex6_55_add, ex6_55_sub, ex6_55_prod, ex6_55_div};
+	int a = 10, b = 5;
+	for (auto f:funcPtrVec)
+	{
+		cout << f(10, 5) << endl;
+	}
+}
+int main(int argc,char **argv)
+{
+	ex6_55();
+	return 0;
 }
