@@ -259,13 +259,19 @@ int *&r = pi;     //r是一个对指针p的引用
 > //委托构造函数
 > constructFunc():constructFunc(defaultValue1,defaultValue2){}
 > ```
-
+7.5.3 默认构造函数调用
+> 如果想定义一个使用默认构造函数进行初始化的对象，正确的方法是去掉对象名之后的空括号对
+>```cpp
+>classT obj(); //false
+>classT obj; //true
+>```
 7.5.4 隐式的类类型转换
 > 1. 只允许一步的（隐式）类类型转换；
->> 1. 定义class sale，假设函数func是接受sale参数，且sale可以用string进行初始化；
+>> 1. 定义class sale，假设函数func是接受sale参数，且sale可以用string进行类型转换；
 >> 2. 那么形如string s;func(s)的一步类型转换是合法的；
 >> 3. 而func("aaaa")这样的类型转换不合法。
 > 2. 当使用explicit声明构造函数时，它将只能以直接初始化（对应于拷贝初始化）的形式使用。编译器不会在自动转换中使用该构造函数。
+>> + 加explicit前缀的函数被禁止用于隐式转换，但是直接构造是不会触发explicit的功能
 
 7.6 类的静态成员
 > 1. 静态成员声明

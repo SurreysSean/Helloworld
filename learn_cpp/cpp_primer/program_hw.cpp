@@ -626,8 +626,107 @@ void ex6_55()
 		cout << f(10, 5) << endl;
 	}
 }
+
+//---ex7.4/7.5/7.9/7.22--- 
+struct Person
+{
+private://7.22
+	string name;
+	string address;
+
+public:
+//7.5
+	string showName() const { return name; }
+	string showAddress() const { return address; }
+	Person() = default;
+	Person(string t_name) : name(t_name){}
+	Person(string t_name,string t_address):name(t_name),address(t_address){}
+	Person(istream &is) { is >> name >> address; }
+	//7.22
+	friend istream &read(istream &, Person &);
+	friend ostream &print(ostream &os, const Person &item);
+};
+//7.9
+istream& read(istream& is,Person& item)
+{
+	is >> item.name >> item.address;
+	return is;
+}
+ostream & print(ostream& os,const Person& item)
+{
+	os << item.name << "\t" << item.address << endl;
+	return os;
+}
+
+//---ex7.23/7.24/7.27/7.29/7.32/7.33---
+class Screen;
+class Window_mgr
+{
+	vector<Screen> scs;
+public:
+	void clear(int);
+};
+class Screen
+{
+private:
+	size_t row, col;
+	size_t cursor;
+	string content;
+
+	void do_display(ostream &os) const  { os << content << endl; }
+
+public:
+	Screen() = default;
+	Screen(size_t r,size_t c):row(r),col(c),content(row*col,' '){}
+	Screen(size_t r, size_t c, char cr) : row(r), col(c) ,content(row*col,'X'){}
+	~Screen(){};
+
+	inline Screen &set(char c) 
+	{
+		content[cursor] = c;
+		return *this;
+	}
+	inline Screen& move(size_t r,size_t c)
+	{
+		cursor = r * col + c;
+		return *this;
+	}
+	inline Screen& display(ostream& os)
+	{
+		do_display(os);
+		return *this;
+	}
+	inline const Screen& display(ostream& os) const 
+	{
+		do_display(os);
+		return *this;
+	}
+	size_t size() const 
+	{
+		return row * col;
+	}
+
+	//friends
+	friend void Window_mgr::clear(int);
+};
+void Window_mgr::clear(int i)
+{
+	Screen &s = scs[i];
+	s.content = string(s.row * s.col, ' ');
+}
+//---ex7.31---
+class Y;
+class X
+{
+	Y *ptr_Y;
+};
+
+class Y
+{
+	class X;
+};
+//---ex7.32---
 int main(int argc,char **argv)
 {
-	ex6_55();
 	return 0;
 }
