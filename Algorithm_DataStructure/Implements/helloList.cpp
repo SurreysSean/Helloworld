@@ -6,36 +6,34 @@ namespace HELLOWORLD
 
     // construction
     template<class T>
-    node<T>::node()
+    listNode<T>::listNode()
     {
-        elem = NULL;
-        next = pre = nullptr;
+        _next = _pre = nullptr;
+        _elem = 0;
+    }
+
+    template<>
+    listNode<std::string>::listNode()
+    {
+        _next = _pre = nullptr;
+        _elem = "";
     }
 
     template<class T>
-    node<T>::node(const T E, const node *const nxt = nullptr, const node *const prev = nullptr)
+    listNode<T>::listNode(const T E, listNode *const nxt , listNode *const prev)
     {
-        elem = E;
-        pre = prev;
-        next = nxt;
+        _elem = E;
+        _pre = prev;
+        _next = nxt;
     }
 
     template<class T>
-    node<T>::node(const node &n)
+    listNode<T>::listNode(const listNode &n)
     {
-        elem = n.elem;
-        pre = n.pre;
-        next = n.next;
+        _elem = n._elem;
+        _pre = n._pre;
+        _next = n._next;
     }
-
-    // reload operator '='
-    template<class T>
-    node<T> 
-    node<T>::operator=(const node &n)
-    {
-        return node(n);
-    }
-
 
     // -- list --
     // Construction
@@ -46,33 +44,42 @@ namespace HELLOWORLD
     }
 
     template<class T>
-    list<T>::list(const vector<T> &src)
+    list<T>::list(const vector<T> &src, bool pIsLoop)
     {
         initMember();
-        node<T> *tempPtr = nullptr;
-        len = src.length();
-        for (int i = 0; i < src.length();i++)
+        _len = src.size();
+        this->_isLoop = pIsLoop;
+        for (int i = 0; i < src.size();i++)
         {
-            tempPtr = new node<T>(src[i],nullptr,rear);
-            rear->next = tempPtr;
-            rear = rear->next;
+            push_back(src[i]);
         }
+        KeepLoop();
     }
 
     template<class T>
     list<T>::list(const list<T> &src)
     {
         initMember();
-        node<T> tempPtr = nullptr;
-        node<T> srcPtr = src.head();
-        len = src.length();
-        while(srcPtr!= nullptr)
+        listNode<T>* srcPtr = src.findNode(1); //The fst node of list 'src'
+        _isLoop = src.isLoopList();
+        while (srcPtr != nullptr)
         {
-            tempPtr = new node<T>(srcPtr->elem,nullptr,rear);
-            rear->next = tempPtr;
-            rear = rear->next;
-            srcPtr = srcPtr->next;
+            push_back(srcPtr->_elem);
+            srcPtr = srcPtr->_next;
         }
+        KeepLoop();
+    }
+
+    template<class T>
+    list<T>::list(const std::initializer_list<T> &src, bool isLoopList)
+    {
+        initMember();
+        _isLoop = isLoopList;
+        for (const T *iter = src.begin(); iter != src.end();++iter)
+        {
+            push_back(*iter);
+        }
+        KeepLoop();
     }
 
     // Deconstruction
@@ -87,39 +94,70 @@ namespace HELLOWORLD
 
     // Reload operator '='
     template<class T>
-    list<T> 
-    list<T>::operator=(const list &src)
+    list<T>& 
+    list<T>::operator=(const list<T> &src)
     {
-        return list<T>(src);
+        if (this == &src)
+        {
+            return *this;
+        }
+        clear();
+        listNode<T>* ptr = src.findNode(1);
+        int srcLen = src.size();
+        _isLoop = src.isLoopList();
+        while (srcLen)
+        {
+            push_back(ptr->_elem);
+            ptr = ptr->_next;
+            --srcLen;
+        }
+        KeepLoop();
+        return *this;
     }
 
     // Insert a element by position
     template<class T>
     void 
-    list<T>::insert(const T elem, node<T>* const ptr)
+    list<T>::insert(const T elem, const int position)
     {
-        node<T> *pre_ptr = ptr->pre;
-        node<T> *newNode = new node<T>(elem,ptr,pre_ptr);
-        ptr->pre = newNode;
-        pre_ptr->next = newNode;
-        ++len;
+        listNode<T> *prePtr = findNode(position - 1);
+        if (prePtr == _rear)
+        {
+            push_back(elem);
+        }
+        else if(prePtr == _headNode)
+        {
+            push_front(elem);
+        }
+        else
+        {
+            listNode<T> *newNode = new listNode<T>(elem,prePtr->_next,prePtr);
+            prePtr->_next->_pre = newNode;
+            prePtr->_next = newNode;
+            ++_len;
+        }
     }
 
     // Remove a element by position
     template<class T>
     void 
-    list<T>::remove(node<T>* const ptr)
+    list<T>::remove(const int position)
     {
-        if (ptr == rear)
+        listNode<T> *delPtr = findNode(position);
+        if (delPtr == _rear)
         {
             pop_back();
         }
+        else if(delPtr == _headNode->_next)
+        {
+            pop_front();
+        }
         else
         {
-            ptr->pre->next = ptr->next;
-            ptr->next->ptr = ptr->pre;
-            delete ptr;
-            --len;
+            delPtr->_pre->_next = delPtr->_next;
+            delPtr->_next->_pre = delPtr->_pre;
+            delete delPtr;
+            --_len;
         }
     }
 
@@ -128,7 +166,7 @@ namespace HELLOWORLD
     T
     list<T>::front() const
     {
-        return headNode.next->elem;
+        return _headNode->_next->_elem;
     }
 
     // Get last element
@@ -136,15 +174,15 @@ namespace HELLOWORLD
     T
     list<T>::end() const
     {
-        return rear->elem;
+        return _rear->_elem;
     }
 
     // Get len
     template<class T>
     int
-    list<T>::length() const
+    list<T>::size() const
     {
-        return len;
+        return _len;
     }
 
     // Add a element at the end
@@ -152,10 +190,14 @@ namespace HELLOWORLD
     void
     list<T>::push_back(const T elem)
     {
-        node<T> *newNode(elem, nullptr, rear);
-        rear->next = newNode;
-        rear = newNode;
-        ++len;
+        listNode<T> *newNode = new listNode<T>(elem, _rear->_next, _rear);
+        if (_isLoop)
+        {
+            _headNode->_pre = newNode;
+        }
+        _rear->_next = newNode;
+        _rear = newNode;
+        ++_len;
     }
 
     // Remove a element at the end
@@ -163,11 +205,15 @@ namespace HELLOWORLD
     void
     list<T>::pop_back()
     {
-        node<T> *pre = rear->pre;
-        pre->next = nullptr;
-        delete rear;
-        rear = pre;
-        --len;
+        listNode<T> *pre = _rear->_pre;
+        pre->_next = _rear->_next;
+        if (_isLoop)
+        {
+            _headNode->_pre = pre;
+        }
+        delete _rear;
+        _rear = pre;
+        --_len;
     }
 
     // Add a element at the beginning
@@ -175,7 +221,10 @@ namespace HELLOWORLD
     void
     list<T>::push_front(const T elem)
     {
-        insert(elem, head());
+        listNode<T> *newNode = new listNode<T>(elem, _headNode->_next, _headNode);
+        _headNode->_next->_pre = newNode;
+        _headNode->_next = newNode;
+        ++_len;
     }
 
     // Remove a element at the beginning
@@ -183,7 +232,11 @@ namespace HELLOWORLD
     void
     list<T>::pop_front()
     {
-        remove(head());
+        listNode<T> *delPtr = _headNode->_next;
+        _headNode->_next = delPtr->_next;
+        delPtr->_next->_pre = _headNode;
+        delete delPtr;
+        --_len;
     }
 
     // Clear the list
@@ -191,9 +244,9 @@ namespace HELLOWORLD
     void
     list<T>::clear()
     {
-        while(rear!=headNode)
+        while(_rear!= _headNode)
         {
-            pop_back()
+            pop_back();
         }
     }
 
@@ -202,19 +255,36 @@ namespace HELLOWORLD
     bool
     list<T>::empty()
     {
-        return (len == 0);
+        return (_len == 0);
     }
 
-    // Find node by value
+    // Find node by index
     template<class T>
-    node<T>*
-    list<T>::find(int pos) const
+    listNode<T>*
+    list<T>::findNode(int pos) const
     {
-        node<T> *ptr = head();
-        while(!(--pos))
+        if (pos > _len || pos < 0)
         {
-            ptr = ptr->next;
+            return nullptr;
+        }
+        listNode<T> *ptr = _headNode;
+        while(pos--)
+        {
+            ptr = ptr->_next;
         }
         return ptr;
+    }
+    // Get value by postion
+    template<class T>
+    T
+    list<T>::find(const int pos) const
+    {
+        T res;
+        listNode<T> *ptr = findNode(pos);
+        if (ptr)
+        {
+            res = ptr->_elem;
+        }
+        return res;
     }
 }

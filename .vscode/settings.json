@@ -56,5 +56,10 @@
         "string_view": "cpp",
         "fstream": "cpp",
         "sstream": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "HELLOQUEUE",
+        "HELLOSTACK",
+        "HELLOWORLD"
+    ]
 }

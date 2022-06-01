@@ -1,15 +1,16 @@
 #ifndef helloVector
 #define helloVector
+#include <initializer_list>
 namespace HELLOWORLD
 {
     const int defaultCapacity = 10;
 
     template <class T> class vector
     {
-        int len;
-        int cap;
-        int rear;
-        T *container;
+        int _len;
+        int _cap;
+        int _rear;
+        T *_container;
 
 
         private:
@@ -28,25 +29,40 @@ namespace HELLOWORLD
 
             vector(const vector<T> &src);
 
+            vector(const std::initializer_list<T> &src);
 
             // Deconstruction
-            ~vector();
+            virtual ~vector();
+
             // Get value by index
             T at(const int index) const;
+
             // Reload operator '='
-            vector<T> operator =(const vector<T>& src);
+            vector<T>& operator=(const vector<T>& src);
+
             // Reload operator '[]'
             T operator[](const int index) const;
+            
             // Get length
-            int length() const;
+            int size() const;
+
             // Get capacity
             int capacity() const;
-            // Add a elements to end
+
+            // Get rear
+            int rear() const { return _rear; }
+
+            // Add a element to end
             void push_back(const T Elem);
+
             // clear the vector
             void clear();
+
             // is empty
-            bool empty() { return len == 0; }
+            bool empty() const { return _len == 0; }
+
+            // Remove a element at the end
+            void pop_back();
     };
 };
 

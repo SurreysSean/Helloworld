@@ -5,55 +5,70 @@
 namespace HELLOWORLD
 {
     template<class T>
-    struct node
+    struct listNode
     {
-        T elem;
-        node *pre, *next;
+        T _elem;
+        listNode *_pre, *_next;
 
         // construction
-        node();
+        listNode();
 
-        node(const T E, const node *const nxt, const node *const prev);
+        listNode(const T E, listNode *const nxt = nullptr, listNode *const prev = nullptr);
 
-        node(const node &n);
+        listNode(const listNode &n);
 
         // deconstruction
-        virtual ~node();
+        virtual ~listNode(){};
 
-        // reload operator '='
-        node<T> operator=(const node &n);
     };
 
     template<class T>
     class list
     {
-        node<T> headNode;
-        node<T> *rear;
-        int len;
-        void initMember() { 
-            rear = headNode;
-            len = 0;
+        listNode<T> *_headNode;
+        listNode<T> *_rear;
+        bool _isLoop;
+        int _len;
+
+        void initMember() {
+            _headNode = new listNode<T>();
+            _rear = _headNode;
+            _len = 0;
+            _isLoop = false;
         }
+        // Keep LoopList 
+        void KeepLoop()
+        {
+            if (_isLoop)
+            {
+                _rear = _headNode;
+                _headNode->_pre = _rear;
+            }
+        }
+
+        
 
     public:
         // Construction
         list();
 
-        list(const vector<T> &src);
+        list(const vector<T> &src, bool isLoop = false);
 
         list(const list<T> &src);
+
+        list(const std::initializer_list<T> &, bool isLoop = false);
 
         // Deconstruction
         virtual ~list();
 
         // Reload operator '='
-        list<T> operator=(const list<T> &src);
+        list<T>& operator=(const list<T> &src);
 
         // Insert a element by position
-        void insert(const T elem,  node<T> *const);
+        void insert(const T elem, int position);
 
         // Remove a element by position
-        void remove(node<T> *const);
+        void remove(const int pos);
 
         // Get first element
         T front() const ;
@@ -62,7 +77,7 @@ namespace HELLOWORLD
         T end() const;
 
         // Get len
-        int length()const ;
+        int size()const ;
 
         // Add a element at the end
         void push_back(const T);
@@ -82,15 +97,14 @@ namespace HELLOWORLD
         // Is empty
         bool empty();
 
-        // Get head ptr
-        node<T> *head() const 
-        {
-            node<T> *ptr = headNode->next;
-            return ptr;
-        };
+        // Is a loop List
+        bool isLoopList() const { return _isLoop; }
 
         // Find node by pos
-        node<T> *find(int) const;
+        listNode<T> *findNode(int) const;
+
+        // Get value by postion
+        T find(const int pos) const;
     };
 }
 
