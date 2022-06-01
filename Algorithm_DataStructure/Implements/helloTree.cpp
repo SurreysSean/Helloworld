@@ -6,36 +6,69 @@ namespace HELLOWORLD
     /* Tree node */
     // Construction
     template<class T>
-    TreeNode<T>::TreeNode(const T value, TreeNode *pt, TreeNode *childs[])
+    TreeNode<T>::TreeNode(const T v, const TreeNode<T> *parent):_child()
     {
-        _value = value;
-        _parent = pt;
-        _childs = childs;
+        _value = v;
+        _parent = parent;
     }
+
+    template<class T>
+    TreeNode<T>::TreeNode(const TreeNode<T> &src):TreeNode<T>::TreeNode(src._value){}
 
     // Deconstruction
     template<class T>
     TreeNode<T>::~TreeNode(){}
 
-    /* Tree base */
-    // Construction
+    // Reload operator '='
     template<class T>
-    Tree<T>::Tree(const int branchNumber)
+    TreeNode<T>&
+    TreeNode<T>::operator=(const TreeNode<T> &src)
     {
-        _root = new TreeNode<T>;
-        _height = 1;
-        _branchNumber = branchNumber
+        if (this != &src)
+        {
+            _value = src._value;
+        }
+        return *this;
     }
 
-    template<class T>
-    Tree<T>::Tree(const Tree<T> &src)
+    /* Tree */
+    // Construction
+    template <class T>
+    Tree<T>::Tree(const int branchNum)
     {
-        
+        _root = nullptr;
+        _height = 0;
     }
+
+    Tree(const vector<T> &src);
+
+    Tree(const std::initializer_list<T> &src);
+
+    Tree(const Tree<T> &);
 
     // Deconstruction
-    virtual ~TreeBase();
+    virtual ~Tree();
 
     // Reload operator '='
-    virtual Tree<T> operator=(const TreeBase &);
+    virtual Tree<T> &operator=(const Tree &src);
+
+    // Clear
+    virtual void clear();
+
+    // Get pointer to root
+    TreeNode<T> *root() const { return _root; }
+
+    // Get height
+    int height() const { return _height; }
+
+    // Get number of branch
+    int branch_number() const { return _branchNumber; }
+
+    // Traversal
+    using customFuc = void (*)(const TreeNode<T> &v, AnyClass &...params);
+    void layer_order_traverse(customFuc fp = nullptr);
+
+    void preorder_traverse(customFuc fp = nullptr);
+
+    void postorder_traverse(customFuc fp = nullptr);
 }

@@ -6,19 +6,25 @@
 
 namespace HELLOWORLD
 {
+
+
     template<class T>
     struct TreeNode
     {
         T _value;
         TreeNode *_parent;
-        TreeNode *_childs[];
+        vector<TreeNode *> _child;
 
         // Construction
-        TreeNode(const T v = 0, TreeNode *pt = nullptr, TreeNode *childs[] =nullptr);
+        TreeNode(const T v = T(),const TreeNode<T>* parent = nullptr) =default;
+
+        TreeNode(const TreeNode<T> &src);
 
         // Deconstruction
         virtual ~TreeNode();
 
+        // Reload operator '='
+        TreeNode<T> &operator=(const TreeNode<T> &src);
     };
 
     template<class T>
@@ -32,13 +38,20 @@ namespace HELLOWORLD
         // Construction
         Tree(const int branchNum = 2);
 
+        Tree(const vector<T> &src);
+
+        Tree(const std::initializer_list<T> &src);
+
         Tree(const Tree<T> &);
 
         // Deconstruction
         virtual ~Tree();
 
         // Reload operator '='
-        virtual Tree<T> operator=(const Tree &);
+        virtual Tree<T>& operator=(const Tree &src);
+
+        // Clear
+        virtual void clear();
 
         // Get pointer to root
         TreeNode<T> *root() const { return _root; }
@@ -50,8 +63,12 @@ namespace HELLOWORLD
         int branch_number() const { return _branchNumber; }
 
         // Traversal
-        void layer_order_traverse
+        using customFuc = void (*)(const TreeNode<T> &v, ...);
+        void layer_order_traverse(customFuc fp = nullptr);
 
+        void preorder_traverse(customFuc fp = nullptr);
+
+        void postorder_traverse(customFuc fp = nullptr);
     };
 }
 

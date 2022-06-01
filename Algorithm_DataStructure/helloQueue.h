@@ -44,7 +44,7 @@ namespace HELLOWORLD
             const list<T> &container() const { return _container; }
 
             // Get front
-            T front() { return _container.front(); }
+            T front() { return empty() ? T() : _container.front(); }
     };
     template<class T>
     queue<T>&

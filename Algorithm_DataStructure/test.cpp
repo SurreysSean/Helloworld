@@ -21,6 +21,6 @@ int main()
     q1.clear();
     q1.push("superise");
     std::printf("front: %s\n", q1.front().c_str());
-    
+
     return 0;
 }
